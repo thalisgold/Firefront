@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wildfire Crisis Game - Phase 1</title>
+  <!-- Link to external CSS file -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header section -->
+  <header>
+    <h1>🔥 Wildfire Crisis Game</h1>
+  </header>
+
+  <!-- Main game area -->
+  <main>
+    <!-- Phase information -->
+    <div class="phase-info" style="text-align: center; font-weight: bold; margin-top: 1rem; font-size: 1.2rem;">
+      Phase 1: Prevention
+    </div>
+
+    <!-- Introductory game context -->
+<div class="info-text" style="text-align: center; margin: 1rem 2rem; font-style: italic;">
+  <strong>Dry conditions have raised alarm bells across the region.</strong><br><br>
+  With emergency funding secured, you’ve been tasked to act preemptively — now is your only chance to shape the battlefield.<br><br>
+  Click forest tiles to place firebreaks (<span style="font-style: normal;">🪵</span>) and slow future wildfires. But beware: each firebreak damages the ecosystem and reduces your final score.<br><br>
+  What you prevent now could save lives later. Choose your cuts wisely.
+</div>
+
+    <!-- Grid and legend container -->
+    <div class="grid-and-legend">
+      <!-- Grid for the map -->
+      <div class="map-grid" id="mapGrid"></div>
+
+      <!-- Stats and legend section -->
+      <div>
+        <!-- Game stats -->
+        <div class="info-panel">
+          <h3>📊 Current Stats</h3>
+          <div class="info-line"><strong>💯 Score:</strong> <span id="score">0</span></div>
+          <div class="info-line-group">
+            <div class="info-line"><strong>🧭 Wind direction:</strong> <span id="windDirection">E</span> <span id="windArrow">⬅️</span></div>
+            <div class="info-line"><strong>🌬️ Wind speed:</strong> <span id="windSpeed">30</span> km/h</div>
+            <div class="info-line"><strong>🌡️ Temperature:</strong> <span id="temperature">35</span> °C</div>
+          </div>
+        </div>
+
+        <!-- Spacer -->
+        <div style="height: 1rem;"></div>
+
+        <!-- Legend explanation -->
+        <div class="legend">
+          <h3>🗺️ Legend</h3>
+          <ul>
+            <li><span class="legend-icon">🌲</span> <strong>Forest</strong> – Can catch fire and burn over time</li>
+            <li><span class="legend-icon">🏠</span> <strong>City</strong> – Highly valuable, protect at all costs</li>
+            <li><span class="legend-icon">🪵</span> <strong>Firebreak</strong> – Blocks fire spread but destroys forest</li>
+            <li style="margin-top: 0.5rem;"><strong>Burn Severity:</strong>
+              <ul class="fire-stages">
+                <li><span class="legend-box burning-stage-1"></span> Slightly burned (Stage 1)</li>
+                <li><span class="legend-box burning-stage-2"></span> Light fire damage (Stage 2)</li>
+                <li><span class="legend-box burning-stage-3"></span> Moderate burn (Stage 3)</li>
+                <li><span class="legend-box burning-stage-4"></span> Severe burn (Stage 4)</li>
+                <li><span class="legend-box burning-stage-5"></span> Total destruction (Stage 5)</li>
+              </ul>
+            </li>
+            <li><span class="legend-icon">🔥</span> <strong>Active Fire</strong></li>
+            <li><span class="legend-icon">💀</span> <strong>Burned</strong></li>
+            <li><span class="legend-icon">💧</span> <strong>Suppression</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firefighting unit selection panel -->
+    <div class="unit-panel-wrapper" id="unitWrapper">
+      <div class="unit-panel" id="unitPanel">
+        <button class="unit-button" onclick="selectUnit('truck')">🚒 Truck</button>
+        <button class="unit-button" onclick="selectUnit('helicopter')">🚁 Helicopter</button>
+        <button class="unit-button" onclick="selectUnit('plane')">✈️ Plane</button>
+      </div>
+    </div>
+
+    <!-- End phase / turn button -->
+    <div class="decision-block">
+      <button id="phaseButton" onclick="endPhaseOne()">End Phase 1</button>
+    </div>
+  </main>
+
+  <!-- Link to external JS file -->
+  <script src="script.js"></script>
+</body>
+</html>

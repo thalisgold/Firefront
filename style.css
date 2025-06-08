@@ -1,0 +1,222 @@
+/* === Base Styles === */
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: #222;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+}
+
+main {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* === Layout === */
+.grid-and-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns, 15), 60px);
+  grid-template-rows: repeat(var(--grid-rows, 15), 60px);
+  grid-gap: 5px;
+}
+
+/* === Game Cells === */
+.cell {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  font-size: 2.5vmin;
+  background: #eee;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* === Tile Types and States === */
+.firebreak { background-color: #b28b76 !important; color: #fff; }
+.forest { background-color: #cdeac0; }
+.city { background-color: #ddd; }
+
+.burning-stage-1 { background-color: #ffe8a1 !important; }
+.burning-stage-2 { background-color: #ffc966 !important; }
+.burning-stage-3 { background-color: #ff8c42 !important; }
+.burning-stage-4 { background-color: #e63946 !important; }
+.burning-stage-5 { background-color: #555 !important; color: white; }
+
+/* === Suppression Highlight === */
+.cell.highlight {
+  outline: 2px dashed #3ec1d3;
+  outline-offset: -4px;
+  box-shadow: 0 0 8px rgba(62, 193, 211, 0.7);
+}
+
+.cell.highlight::after {
+  content: '💧';
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 16px;
+}
+
+/* === Root Grid Settings === */
+:root {
+  --grid-columns: 15;
+  --grid-rows: 15;
+}
+
+/* === Info Panels === */
+.info-panel,
+.legend {
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 6px;
+  max-width: 400px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  border: 1px solid #ccc;
+}
+
+.info-panel h3,
+.legend h3 {
+  margin-top: 0;
+}
+
+.info-line {
+  margin: 0.4rem 0;
+}
+
+/* === Legend Elements === */
+.legend-box {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 0.5em;
+  border-radius: 4px;
+  border: 1px solid #aaa;
+}
+
+.legend-icon {
+  display: inline-block;
+  width: 20px;
+  text-align: center;
+  margin-right: 0.5em;
+  font-size: 1.1em;
+}
+
+.fire-stages {
+  list-style-type: none;
+  padding-left: 1.5em;
+}
+
+/* === Unit Panel === */
+.unit-panel-wrapper {
+  display: none;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.unit-panel-wrapper.visible {
+  display: flex;
+}
+
+.unit-panel {
+  display: flex;
+  gap: 1rem;
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 6px;
+  max-width: 500px;
+  border: 1px solid #ccc;
+}
+
+.unit-button {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  background-color: #ccc;
+  color: #000;
+}
+
+.unit-button.selected {
+  background-color: #3ec1d3;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 0 5px rgba(62, 193, 211, 0.8);
+}
+
+/* === Control Buttons === */
+.decision-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.decision-block button {
+  margin: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background: #ff6b35;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* === Water Bar === */
+.water-bar-container {
+  background: #ddd;
+  width: 200px;
+  height: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+}
+
+.water-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: #0a9396;
+  transition: width 0.3s ease-in-out;
+}
+
+
+.result-good {
+  color: green;
+}
+.result-okay {
+  color: goldenrod;
+}
+.result-bad {
+  color: crimson;
+}
