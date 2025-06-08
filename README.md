@@ -32,7 +32,7 @@ You are an emergency response coordinator during a wildfire outbreak. Your missi
 | Mechanic          | Details                                                                 |
 |-------------------|-------------------------------------------------------------------------|
 | 🔥 Fire Spread     | Increases each turn, influenced by wind direction and speed.           |
-| 💧 Water Resource  | Starts at 25, regenerates +3 per turn (max 25).                         |
+| 💧 Water Resource  | Starts at 15, regenerates +5 per turn (max 15).                         |
 | 🚒 Firefighting Units | Each unit has a water cost and cooldown time:                          |
 |                   | • Truck (1 water, 1-turn cooldown)                                      |
 |                   | • Helicopter (5 water, 2-turn cooldown)                                 |
