@@ -56,10 +56,8 @@ This prototype is designed to explore:
 
 ## 🚧 Upcoming Features (for future iterations)
 
-- Multiple difficulty levels  
-- Weather events and rain  
+- Multiple difficulty levels
 - Unit upgrades or random events  
-- Evacuation and citizen impact tracking  
 - Narrative framing and progression system  
 - Improved UI, animations, and sound
 
@@ -86,4 +84,4 @@ This prototype is part of a student project for the “Creating Web Experiences 
 ---
 
 > Questions, feedback, or want to playtest?  
-> Contact: **Thalis Gold** · `thalisgold@github.com`
+> Contact: **Thalis Goldschmidt** · `thalisgold@github.com`
