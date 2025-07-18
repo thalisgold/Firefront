@@ -3,22 +3,306 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wildfire Crisis Game - Phase 1</title>
+  <title>Firefront</title>
   <!-- Link to external CSS file -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Header section -->
   <header>
-    <h1>🔥 Wildfire Crisis Game</h1>
+    <h1> Firefront 🔥</h1>
   </header>
+  <!-- INTRO PAGE -->
+  <div id="introScreen" style="padding: 2rem; text-align: center; max-width: 800px; margin: auto; position: relative;">
+  <button onclick="startGame()" 
+          style="
+            position: absolute; 
+            top: 1rem; 
+            right: 1rem; 
+            background-color: #e74c3c; 
+            color: white; 
+            border: none; 
+            padding: 0.5rem 1rem; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            transition: background-color 0.3s ease;
+          "
+          onmouseover="this.style.backgroundColor='#c0392b'"
+          onmouseout="this.style.backgroundColor='#e74c3c'">
+    Skip
+  </button>
 
+<div class="intro-page" id="page1">
+  <h2>Welcome to <span style="color: #e74c3c;">Firefront</span>🔥</h2>
+  <p>
+    This short introduction will guide you through everything you need to know to play this game successfully.
+  </p>
+  <p>
+    We’ll explain how the game is structured, how fires spread, how to contain them, how scoring works, and how to win.
+  </p>
+  <p>Let’s get started!</p>
+  <button onclick="showPage(2)" class="unit-button selected">Next</button>
+</div>
+
+<div class="intro-page" id="page2" style="display: none;">
+  <h3>🧭 Your Role & Mission</h3>
+  <p>
+    You are the wildfire response coordinator in a small city in Northern California.
+    Your job is to prevent wildfires from spreading and protect both urban and forested areas.
+  </p>
+
+  <h3>🎯 Goal & Victory Condition</h3>
+  <p>
+    Your goal is to <strong>minimize the damage</strong> caused by wildfires by acting quickly and strategically.
+    You’ll use firebreaks, suppression units, and smart planning to protect high-risk zones.
+  </p>
+
+  <p>
+    The faster you extinguish active fires, the better your score will be.
+  </p>
+
+  <p>
+    <strong>The game only ends when there are no active fires left on the map.</strong><br>
+    You must fully contain and extinguish the wildfire before your final score is calculated.
+  </p>
+
+  <button onclick="showPage(3)" class="unit-button selected">Next</button>
+</div>
+
+
+<div class="intro-page" id="page3" style="display: none;">
+  <h3>Phase 1: Prevention</h3>
+  <p>
+    Before the wildfire starts, you have a limited window to <strong>place firebreaks</strong> (🪵) .
+  </p>
+  <p>
+    Firebreaks help block the fire’s spread and protect key areas.
+  </p>
+    <p>
+    Placing a firebreak removes a forest cell, causing immediate damage and reducing your final score, so use them strategically.
+  </p>
+    <p>
+    Fires can spread in all 8 directions (including diagonals).
+  </p>
+  <button onclick="showPage(4)" class="unit-button selected">Next</button>
+</div>
+
+<div class="intro-page" id="page4" style="display: none;">
+  <h3>Phase 2: Crisis Response</h3>
+  <p>
+    A sudden heatwave and erratic wind patterns have triggered a massive wildfire outbreak.
+    This is where the real challenge begins.
+  </p>
+
+  <p>
+    The game now becomes <strong>turn-based</strong>. Fires will once ignite at random locations on the map.
+    From that point on, they’ll spread dynamically — and it’s your job to contain them.
+  </p>
+
+  <ul style="list-style-position: inside; display: inline-block; text-align: left; margin: 0 auto;">
+    <li>Each turn, you assess the fire situation and deploy suppression units (🚒 🚁 ✈️).</li>
+    <li>Each unit has a different area of effect, cooldown, and water cost. Use them wisely.</li>
+    <li>When you end your turn, the simulation will process weather, fire spread, and suppression effects.</li>
+  </ul>
+
+<h4> How Fire Spreads</h4>
+
+<p>
+  Each cell has a <strong>fire stage</strong> from 0 (not burning) to 4 (severe fire). If it reaches stage 5, it is fully burned and turns into a skull (💀).<br>
+  The current fire stage is visualized with 1–4 flame icons (🔥) in the top-left corner of each cell.
+</p>
+
+<p>
+  Fire spreads to adjacent cells (in all 8 directions) based on:
+</p>
+
+<div style="text-align: center;">
+  <ul style="list-style-position: inside; display: inline-block; text-align: left; margin: 0 auto;">
+    <li>💨 Wind direction and speed</li>
+    <li>🌡️ Temperature</li>
+    <li>🔥 Intensity of the burning cell</li>
+    <li>🎲 Random chance</li>
+  </ul>
+</div>
+
+<p>
+  Burned-out cells (fire stage 5) do <strong>not</strong> spread fire and can not reignite.<br>
+  Extinguished cells <strong>can reignite</strong> if they're adjacent to active fires.
+</p>
+
+<p>
+  If a suppression unit is placed on a burning cell, that cell <strong>cannot ignite neighboring cells during that turn</strong>.
+</p>
+
+<p>
+  Your firebreak placements from Phase 1 may now protect key areas — or reveal weak points in your defenses.<br>
+</p>
+  <button onclick="showPage(5)" class="unit-button selected">Next</button>
+</div>
+
+<div class="intro-page" id="page5" style="display: none;">
+  <h3>💯 Scoring</h3>
+
+  <p>
+    The <strong>maximum fire stage</strong> a cell has ever reached determines its contribution to your final damage score.
+    This value is encoded visually using a color-coded background.
+  </p>
+
+<h4>🔥 Fire Damage Color Coding</h4>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+  <div style="display: flex; align-items: center;">
+    <span class="legend-box burning-stage-1"></span>
+    <span>Slightly burned (Stage 1)</span>
+  </div>
+  <div style="display: flex; align-items: center;">
+    <span class="legend-box burning-stage-2"></span>
+    <span>Light fire damage (Stage 2)</span>
+  </div>
+  <div style="display: flex; align-items: center;">
+    <span class="legend-box burning-stage-3"></span>
+    <span>Moderate burn (Stage 3)</span>
+  </div>
+  <div style="display: flex; align-items: center;">
+    <span class="legend-box burning-stage-4"></span>
+    <span>Severe burn (Stage 4)</span>
+  </div>
+  <div style="display: flex; align-items: center;">
+    <span class="legend-box burning-stage-5"></span>
+    <span>Total destruction (Stage 5)</span>
+  </div>
+</div>
+
+  <h4>📈 Scoring System</h4>
+  <p>
+    At the end of each turn, your score is updated based on the <strong>cumulative damage</strong> across the map.
+    Each cell contributes a penalty based on two factors:
+  </p>
+
+  <div style="text-align: center;">
+    <ul style="list-style-position: inside; display: inline-block; text-align: left;">
+      <li>Its <strong>maximum fire stage</strong></li>
+      <li>Its <strong>land type</strong> (city 🏠 vs forest 🌲)</li>
+    </ul>
+  </div>
+
+  <p>
+    Damage to <strong>city cells</strong> is much more costly than to forests, reflecting their higher human and economic value.
+    To maximize your score, focus suppression efforts around urban zones.
+  </p>
+
+  <div style="overflow-x: auto;">
+    <table style="margin: 0 auto; border-collapse: collapse; width: 90%;">
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="border: 1px solid #ccc; padding: 8px;">Fire Stage</th>
+          <th style="border: 1px solid #ccc; padding: 8px;">Penalty (Forest)</th>
+          <th style="border: 1px solid #ccc; padding: 8px;">Penalty (City)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="border: 1px solid #ccc; padding: 8px;">1</td><td style="border: 1px solid #ccc; padding: 8px;">-0.5</td><td style="border: 1px solid #ccc; padding: 8px;">-2.0</td></tr>
+        <tr><td style="border: 1px solid #ccc; padding: 8px;">2</td><td style="border: 1px solid #ccc; padding: 8px;">-1.0</td><td style="border: 1px solid #ccc; padding: 8px;">-4.0</td></tr>
+        <tr><td style="border: 1px solid #ccc; padding: 8px;">3</td><td style="border: 1px solid #ccc; padding: 8px;">-1.5</td><td style="border: 1px solid #ccc; padding: 8px;">-6.0</td></tr>
+        <tr><td style="border: 1px solid #ccc; padding: 8px;">4</td><td style="border: 1px solid #ccc; padding: 8px;">-2.0</td><td style="border: 1px solid #ccc; padding: 8px;">-8.0</td></tr>
+        <tr><td style="border: 1px solid #ccc; padding: 8px;">5</td><td style="border: 1px solid #ccc; padding: 8px;">-2.5</td><td style="border: 1px solid #ccc; padding: 8px;">-10.0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="margin-top: 1em;">
+  </p>
+
+  <button onclick="showPage(6)" class="unit-button selected">Next</button>
+</div>
+
+<div class="intro-page" id="page6" style="display: none;">
+  <h3>🚒 Suppression & Firefighting Units</h3>
+  <p>
+    Each turn, you can <strong>deploy firefighting units</strong> by selecting a unit type and clicking on a target cell.
+    You'll see a visual preview of the unit’s <strong>area of effect</strong>.
+  </p>
+
+  <p>
+    When placed, suppression actions are marked with 💧 icons in the <strong>bottom-left corner</strong> of affected cells.
+    Each 💧 reduces the fire stage of that cell by one — if enough are used, fires can be extinguished completely.
+  </p>
+
+  <p>
+    Units cost water based on how many cells they affect, and then enter a cooldown before they can be used again.
+    You can <strong>combine multiple units</strong> in a single turn — as long as you have enough water.
+  </p>
+
+  <h4>📊 Unit Capabilities</h4>
+  <div style="overflow-x: auto;">
+    <table style="margin: 0 auto; border-collapse: collapse; width: 90%;">
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="border: 1px solid #ccc; padding: 8px;">Unit</th>
+          <th style="border: 1px solid #ccc; padding: 8px;">Count</th>
+          <th style="border: 1px solid #ccc; padding: 8px;">Cooldown</th>
+          <th style="border: 1px solid #ccc; padding: 8px;">Area of Effect</th>
+          <th style="border: 1px solid #ccc; padding: 8px;">Water Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px;">🚒 Truck</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">5</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">1 turn</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">Single Cell</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px;">🚁 Helicopter</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">3</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">2 turns</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">X-shape (5 cells)</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">5</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid #ccc; padding: 8px;">✈️ Plane</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">1</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">3 turns</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">3×3 Grid (9 cells)</td>
+          <td style="border: 1px solid #ccc; padding: 8px;">9</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="margin-top: 1em;">
+    Plan carefully: water is limited, and unit cooldowns mean you can't rely on the same tactic every turn.
+  </p>
+
+  <button onclick="showPage(7)" class="unit-button selected">Next</button>
+</div>
+
+
+  <div class="intro-page" id="page7" style="display: none;">
+    <h3>✅ Ready to Begin?</h3>
+    <p>Each turn is timed. Every decision matters. Good luck!</p>
+    <button onclick="startGame()" class="unit-button selected">🚀 Start Game</button>
+  </div>
+</div>
   <!-- Main game area -->
+  <div id="gameScreen" style="display: none;">
   <main>
     <!-- Phase information -->
     <div class="phase-info" style="text-align: center; font-weight: bold; margin-top: 1rem; font-size: 1.2rem;">
       Phase 1: Prevention
     </div>
+    <!-- TIMER: Visible only during Phase 2 -->
+<div id="turn-timer" style="display: none; text-align: center; font-size: 1.5rem; font-weight: bold; margin-top: 0.5rem;">
+  ⏱️ Time until turn ends: <span id="timer-countdown">30</span>s
+  <div style="margin-top: 0.5rem;">
+    <div id="timer-bar-wrapper" style="width: 30%; margin: 0 auto; background: #eee; border-radius: 6px; height: 12px; overflow: hidden;">
+      <div id="timer-bar" style="height: 100%; width: 100%; background: #444; transition: width 1s linear;"></div>
+    </div>
+  </div>
+</div>
+
 
     <!-- Introductory game context -->
 <div class="info-text" style="text-align: center; margin: 1rem 2rem; font-style: italic;">
@@ -87,6 +371,8 @@
       <button id="phaseButton" onclick="endPhaseOne()">End Phase 1</button>
     </div>
   </main>
+    <!-- Your existing <main> content goes here -->
+</div>
 
   <!-- Link to external JS file -->
   <script src="script.js"></script>

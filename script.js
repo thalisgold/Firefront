@@ -50,6 +50,70 @@ waterDisplay.innerHTML = `
 `;
 document.querySelector('.info-panel').appendChild(waterDisplay);
 
+
+// === TIMER FUNCTIONS ===
+let turnTimer = null;
+let turnTimeLimit = 30;
+let timeRemaining = turnTimeLimit;
+
+function startTurnTimer() {
+  clearTurnTimer();
+  timeRemaining = turnTimeLimit;
+  updateTurnTimerDisplay();
+
+  turnTimer = setInterval(() => {
+    timeRemaining -= 0.1;
+    updateTurnTimerDisplay();
+
+    if (timeRemaining <= 0) {
+      clearTurnTimer();
+      endTurn();
+    }
+  }, 100);
+}
+
+
+function clearTurnTimer() {
+  if (turnTimer) {
+    clearInterval(turnTimer);
+    turnTimer = null;
+  }
+}
+
+function updateTurnTimerDisplay() {
+  const timerEl = document.getElementById('timer-countdown');
+  if (timerEl) {
+    timerEl.textContent = timeRemaining;
+  }
+}
+
+function updateTurnTimerDisplay() {
+  const timerEl = document.getElementById('timer-countdown');
+  const barEl = document.getElementById('timer-bar');
+
+  if (timerEl) {
+    timerEl.textContent = Math.ceil(timeRemaining); // Only show full seconds
+  }
+
+  if (barEl) {
+    const percent = (timeRemaining / turnTimeLimit) * 100;
+    barEl.style.width = percent + '%';
+
+    if (timeRemaining > 20) {
+      barEl.style.background = 'green';
+    } else if (timeRemaining > 10) {
+      barEl.style.background = 'orange';
+    } else {
+      barEl.style.background = 'crimson';
+    }
+  }
+}
+
+
+
+
+
+
 // === WATER BAR FUNCTIONS ===
 function updateWaterDisplay() {
   const el = document.getElementById("waterAmount");
@@ -57,6 +121,19 @@ function updateWaterDisplay() {
   if (el) el.textContent = water;
   if (bar) bar.style.width = `${(water / 15) * 100}%`;
 }
+
+  function startGame() {
+    document.getElementById('introScreen').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
+  }
+
+  function showPage(pageNumber) {
+  const totalPages = 7;
+  for (let i = 1; i <= totalPages; i++) {
+    document.getElementById(`page${i}`).style.display = (i === pageNumber) ? 'block' : 'none';
+  }
+}
+
 
 // === UNIT COOLDOWN FUNCTIONS ===
 function updateUnitButtons() {
@@ -118,7 +195,7 @@ function calculateScore() {
       const stage = cell.max_stage;
       if (stage >= 1 && stage <= 5) {
         let penalty = stage * 0.5;
-        if (cell.type === 'city') penalty *= 2;
+        if (cell.type === 'city') penalty *= 4;
         total -= penalty;
       }
     });
@@ -300,7 +377,7 @@ function endPhaseOne() {
     Each unit has a cooldown after use — you can't reuse them immediately.<br>
     Water is limited: you start with <strong>15</strong> units and regain <strong>+5 per turn</strong>.<br><br>
     Click a unit, then assign it to a location on the map. Suppression effects will apply at the end of your turn.<br><br>
-    🔥 The fire spreads with the wind. Protect cities, contain the blaze, and make every turn count.<br>
+    🔥 The fire spreads with the wind. Protect cities and forests, contain the blaze, and make every turn count.<br>
     When ready, click <strong>‘End Turn’</strong> to continue.
   `;
   const button = document.querySelector('.decision-block button');
@@ -310,8 +387,12 @@ function endPhaseOne() {
   igniteInitialOutbreak();
   calculateScore();
   renderGrid();
+  document.getElementById('turn-timer').style.display = 'block';
+  startTurnTimer();
 }
 function endTurn() {
+  // clearTurnTimer(); // stop countdown if still running
+  startTurnTimer();
   const { direction, speed, temperature } = getCurrentWeather();
   const favoredOffsets = getWindFavoredOffsets(direction);
   const toIgnite = [];
@@ -387,8 +468,14 @@ function endTurn() {
     if (!suppressedThisTurn.has(key) && cell.max_stage < 5) {
       cell.fire_stage = 1;
       cell.max_stage = Math.max(cell.max_stage, 1);
+
+      // 🚨 Immediately show alert if this is a city
+      if (cell.type === 'city') {
+        showCityFireAlert();
+      }
     }
   });
+
 
   // ♻️ Step 4: Reset suppression and update map
   suppressionQueue = [];
@@ -408,6 +495,36 @@ function endTurn() {
   // 🔚 Step 7: Check for game end
   setTimeout(checkGameEnd, 0);
 }
+
+function showCityFireAlert() {
+  const alertBox = document.createElement('div');
+  alertBox.textContent = '⚠️ A city has caught fire! Prioritize it!';
+  alertBox.style.position = 'fixed';
+  alertBox.style.top = '20px';
+  alertBox.style.left = '50%';
+  alertBox.style.transform = 'translateX(-50%)';
+  alertBox.style.background = 'crimson';
+  alertBox.style.color = 'white';
+  alertBox.style.padding = '1rem 2rem';
+  alertBox.style.fontSize = '1.2rem';
+  alertBox.style.fontWeight = 'bold';
+  alertBox.style.borderRadius = '8px';
+  alertBox.style.boxShadow = '0 0 10px rgba(0,0,0,0.3)';
+  alertBox.style.zIndex = '9999';
+  alertBox.style.opacity = '1';
+  alertBox.style.transition = 'opacity 1s ease-out';
+
+  document.body.appendChild(alertBox);
+
+  // Auto-dismiss after 3 seconds
+  setTimeout(() => {
+    alertBox.style.opacity = '0';
+    setTimeout(() => {
+      alertBox.remove();
+    }, 1000);
+  }, 3000);
+}
+
 
 
 
@@ -655,7 +772,7 @@ function shouldIgnite(source, target, si, sj, ti, tj, favoredOffsets, windSpeed,
 
   // Reduce wind influence (was ×3 → now ×1.5)
   if (favoredOffsets.some(([fx, fy]) => fx === dx && fy === dy)) {
-    chance *= 4;
+    chance *= 5;
   }
 
   // Reduce temperature influence (was 0.02 → now 0.01)
@@ -675,6 +792,7 @@ function checkGameEnd() {
   );
 
   if (!anyFireLeft) {
+    document.getElementById('turn-timer').style.display = 'none';
     // Determine outcome tier
     let outcome, outcomeClass;
     if (score > -20) {
