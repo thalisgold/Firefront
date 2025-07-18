@@ -311,15 +311,23 @@ function endPhaseOne() {
   calculateScore();
   renderGrid();
 }
-
-// === END TURN FUNCTION ===
 function endTurn() {
   const { direction, speed, temperature } = getCurrentWeather();
   const favoredOffsets = getWindFavoredOffsets(direction);
   const toIgnite = [];
   const suppressedThisTurn = new Set();
 
-  // Step 1: Apply suppression
+  // 🔎 Step 0: Snapshot valid active burning cells before suppression
+  const activeBurningAtStart = new Set();
+  grid.forEach((row, i) => {
+    row.forEach((cell, j) => {
+      if (cell.fire_stage >= 1 && cell.fire_stage < 5) {
+        activeBurningAtStart.add(`${i},${j}`);
+      }
+    });
+  });
+
+  // 🧯 Step 1: Apply suppression effects
   grid.forEach((row, i) => {
     row.forEach((cell, j) => {
       const suppression = stagedActions[i][j].length;
@@ -331,36 +339,49 @@ function endTurn() {
     });
   });
 
-  // Step 2: Spread fire (from non-suppressed and non-burned cells)
-  grid.forEach((row, i) => {
-    row.forEach((cell, j) => {
-      const key = `${i},${j}`;
-      if (cell.fire_stage === 5 || cell.max_stage === 5) return;
-      if (suppressedThisTurn.has(key)) return;
-
-      if (cell.fire_stage >= 1 && cell.fire_stage < 5) {
-        cell.fire_stage++;
-        cell.max_stage = Math.max(cell.max_stage, cell.fire_stage);
-
-        getNeighbors(i, j).forEach(([ni, nj]) => {
-          const neighbor = grid[ni][nj];
-          const neighborKey = `${ni},${nj}`;
-
-          if (
-            neighbor.fire_stage === 0 &&
-            !neighbor.firebreak &&
-            !suppressedThisTurn.has(neighborKey) &&
-            neighbor.max_stage < 5 &&
-            shouldIgnite(cell, neighbor, i, j, ni, nj, favoredOffsets, speed, temperature)
-          ) {
-            toIgnite.push(neighbor);
-          }
-        });
+  // 🔥 Step 2: Spread fire from valid, unsuppressed, active sources
+  const stagedForSuppression = new Set();
+  suppressionQueue.forEach(({ x, y, unit }) => {
+    const aoe = getUnitAOE(unit);
+    aoe.forEach(([dx, dy]) => {
+      const ni = x + dx;
+      const nj = y + dy;
+      if (ni >= 0 && nj >= 0 && ni < gridHeight && nj < gridWidth) {
+        stagedForSuppression.add(`${ni},${nj}`);
       }
     });
   });
 
-  // Step 3: Ignite new neighbors (if not suppressed)
+  grid.forEach((row, i) => {
+    row.forEach((cell, j) => {
+      const key = `${i},${j}`;
+      if (!activeBurningAtStart.has(key)) return;
+      if (suppressedThisTurn.has(key) || stagedForSuppression.has(key)) return;
+      if (cell.fire_stage < 1 || cell.fire_stage >= 5 || cell.max_stage === 5) return;
+
+      // 🔁 Advance fire safely
+      cell.fire_stage = Math.min(5, cell.fire_stage + 1);
+      cell.max_stage = Math.max(cell.max_stage, cell.fire_stage);
+
+      // 🔥 Try to ignite neighbors
+      getNeighbors(i, j).forEach(([ni, nj]) => {
+        const neighbor = grid[ni][nj];
+        const neighborKey = `${ni},${nj}`;
+
+        if (
+          neighbor.fire_stage === 0 &&
+          !neighbor.firebreak &&
+          !suppressedThisTurn.has(neighborKey) &&
+          neighbor.max_stage < 5 &&
+          shouldIgnite(cell, neighbor, i, j, ni, nj, favoredOffsets, speed, temperature)
+        ) {
+          toIgnite.push(neighbor);
+        }
+      });
+    });
+  });
+
+  // 🔥 Step 3: Ignite new neighbors
   toIgnite.forEach(cell => {
     const key = `${cell.x},${cell.y}`;
     if (!suppressedThisTurn.has(key) && cell.max_stage < 5) {
@@ -368,24 +389,28 @@ function endTurn() {
       cell.max_stage = Math.max(cell.max_stage, 1);
     }
   });
-  
 
-  // Step 4: Clear suppression queue
+  // ♻️ Step 4: Reset suppression and update map
   suppressionQueue = [];
   updateStagedActionsMap();
 
-  // Step 5: Process cooldowns
+  // 🔁 Step 5: Process cooldowns
   processCooldowns();
 
-  // Step 6: Update weather, render, score
+  // 🌦️ Step 6: Update UI
   updateWeather();
   water = Math.min(water + 5, 15);
   updateWaterDisplay();
   renderGrid();
-  updateUnitButtons(); // 👈 Important: shows updated availability immediately
+  updateUnitButtons();
   calculateScore();
-  checkGameEnd();
+
+  // 🔚 Step 7: Check for game end
+  setTimeout(checkGameEnd, 0);
 }
+
+
+
 
 
 // === NEW: Fire spread logic ===
@@ -682,6 +707,8 @@ function checkGameEnd() {
     document.querySelectorAll('.unit-button').forEach(btn => btn.disabled = true);
     decisionBlock.innerHTML = `<button onclick="restartGame()">🔁 Restart Game</button>`;
   }
+  const burning = grid.flat().filter(c => c.fire_stage >= 1 && c.fire_stage < 5);
+  console.log('🔥 Remaining fires:', burning.length, burning.map(c => `(${c.x},${c.y})`));
 }
 
 // === RESTART GAME FUNCTION ===
