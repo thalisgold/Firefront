@@ -11,6 +11,7 @@ header {
   color: #fff;
   padding: 1rem;
   text-align: center;
+  margin-bottom: 2rem; /* or more if needed */
 }
 
 main {
@@ -219,4 +220,45 @@ main {
 }
 .result-bad {
   color: crimson;
+}
+
+/* Background image stays behind everything */
+#background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('assets/image_1.png'); /* or your desired image */
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  opacity: 1;
+}
+
+/* White intro box */
+#introScreen {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 2rem auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+#gameScreen {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+#gameScreen main {
+  max-width: 1200px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95); /* Slight transparency */
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
