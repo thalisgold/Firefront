@@ -125,6 +125,7 @@ function updateWaterDisplay() {
   function startGame() {
     document.getElementById('introScreen').style.display = 'none';
     document.getElementById('gameScreen').style.display = 'block';
+    setBackgroundForPhase(1);
   }
 
   function showPage(pageNumber) {
@@ -363,6 +364,17 @@ function renderGrid() {
   });
 }
 
+function setBackgroundForPhase(phase) {
+  const background = document.getElementById("background");
+    if (phase === 1) {
+    // Phase 1: Prevention
+    background.style.backgroundImage = "url('assets/image_2.png')";
+  } else if (phase === 2) {
+    // Phase 2: Wildfire
+    background.style.backgroundImage = "url('assets/image_3.png')";
+  }
+}
+
 function endPhaseOne() {
   phase = 2;
   document.querySelector(".unit-panel-wrapper").style.display = "flex";
@@ -370,14 +382,7 @@ function endPhaseOne() {
   document.querySelector('.phase-info').textContent = "Phase 2: Crisis Response";
   document.querySelector('.info-text').innerHTML = `
     <strong>Wildfires have erupted — and time is running out.</strong><br><br>
-    Deploy your firefighting units carefully:<br>
-    🚒 <em>Trucks</em> for precise, single-target suppression,<br>
-    🚁 <em>Helicopters</em> for medium-range splash zones,<br>
-    ✈️ <em>Planes</em> for maximum area coverage.<br><br>
-    Each unit has a cooldown after use — you can't reuse them immediately.<br>
-    Water is limited: you start with <strong>15</strong> units and regain <strong>+5 per turn</strong>.<br><br>
     Click a unit, then assign it to a location on the map. Suppression effects will apply at the end of your turn.<br><br>
-    🔥 The fire spreads with the wind. Protect cities and forests, contain the blaze, and make every turn count.<br>
     When ready, click <strong>‘End Turn’</strong> to continue.
   `;
   const button = document.querySelector('.decision-block button');
@@ -389,6 +394,8 @@ function endPhaseOne() {
   renderGrid();
   document.getElementById('turn-timer').style.display = 'block';
   startTurnTimer();
+  setBackgroundForPhase(2);
+
 }
 function endTurn() {
   // clearTurnTimer(); // stop countdown if still running
@@ -491,6 +498,7 @@ function endTurn() {
   renderGrid();
   updateUnitButtons();
   calculateScore();
+  
 
   // 🔚 Step 7: Check for game end
   setTimeout(checkGameEnd, 0);
