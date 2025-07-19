@@ -1,4 +1,4 @@
-# 🔥 Wildfire Crisis Prototype
+# 🔥 Firefront - A Wildfire Crisis Game (Prototype)
 
 **Creating Web Experiences for Digital Humanities – Prototype 1**
 
